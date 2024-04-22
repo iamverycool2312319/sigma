@@ -529,7 +529,7 @@ end
 
 
 Misc2:CreateToggle({
-    Title = "mag test",
+    Title = "Emulator mag test",
       Binding = false,
       CurrentValue = false,
       Callback = function(v)
@@ -545,7 +545,7 @@ Misc2:CreateToggle({
 
 
 Misc2:CreateSlider({
-    Title = "mag delay",
+    Title = "emulator mag delay",
     CurrentValue = 0,
     Range = {0, 1},
     Callback = function(v)
@@ -553,7 +553,7 @@ Misc2:CreateSlider({
 end})
 
 Misc2:CreateSlider({
-    Title = "mag distance",
+    Title = "emulator mag distance",
     CurrentValue = 0,
     Range = {10, 250},
     Callback = function(v)
@@ -561,3 +561,31 @@ Misc2:CreateSlider({
 end})
 
 
+
+Misc2:CreateToggle({
+    Title = "mobile mag test",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(v)
+	tooggleEnabled = v
+	while tooggleEnabled == true do
+		task.wait()
+		universalcatch()
+	end
+end})
+
+Misc2:CreateSlider({
+    Title = "Mobile delay",
+    CurrentValue = 0,
+    Range = {0, 1},
+    Callback = function(v)
+	uniDelay = v
+end})
+
+Misc2:CreateSlider({
+    Title = "mobile mag distance",
+    CurrentValue = 0,
+    Range = {0, 25},
+    Callback = function(v)
+	universal = v
+end})
