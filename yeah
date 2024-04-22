@@ -1,0 +1,876 @@
+print('Initializing AC Bypass!')
+ 
+--// Services
+local Players = cloneref(game:GetService("Players"))
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local RunService = cloneref(game:GetService("RunService"))
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local Teams = cloneref(game:GetService("Teams"))
+local TweenService = cloneref(game:GetService("TweenService"))
+local Stats = cloneref(game:GetService("Stats"))
+local RunService = cloneref(game:GetService("RunService"))
+ 
+if game.PlaceId ~= 8206123457 or game.PlaceId == 8204899140 then
+    --> Made by Unlimited, Modified/Updated by NG/Johan Peterson
+ 
+    --// Services
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+ 
+    --// Variables
+    local Player = game:GetService("Players").LocalPlayer
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    local HRP = Character and Character.HumanoidRootPart
+    local Hooks = {}
+    local HandshakeArgs = nil
+    local Remote = ReplicatedStorage:WaitForChild("Remotes").CharacterSoundEvent
+    local ACString = nil
+ 
+    --> os.clock hook
+    local RandomNumber = math.random(1e3, 1e5)
+ 
+    Hooks.Clock = hookfunction(os.date, function(...)
+        return Hooks.Clock(...) + RandomNumber
+    end)
+ 
+    --> namecall hook
+    Hooks.Namecall = hookmetamethod(game, "__namecall", function(self, ...)
+        local Method = getnamecallmethod()
+        local Args = {...}
+ 
+        if not checkcaller() and self == Remote and (Method == "FireServer" or Method == "fireServer") and string.find(Args[1], "AC") then
+            if not HandshakeArgs then
+                if type(Args[2]) == "table" and #Args[2] == 19 then
+                    ACString = Args[1]
+                    HandshakeArgs = Args[2]
+                end
+            else
+                return coroutine.yield()
+            end
+        end
+ 
+        return Hooks.Namecall(self, ...)
+    end)
+ 
+    while not ACString and not HandshakeArgs do
+        task.wait()
+    end
+ 
+    print("Found handshake arguments.")
+ 
+    task.wait(3)
+ 
+    for i, v in pairs(getgc()) do
+        if type(v) == "function" then
+            if getinfo(v).source:find("PlayerModule.LocalScript") then
+                hookfunction(v, function() end)
+            end
+        end
+    end
+ 
+    print("Hooked all anticheat functions.")
+ 
+    local ReplicateHandshake = function()
+        return Remote:fireServer(ACString, HandshakeArgs, nil)
+    end
+ 
+    task.spawn(function()
+        while task.wait(0.4) do
+            local Success, Error = pcall(ReplicateHandshake)
+ 
+            if not Success or Error then
+                return {
+                    warn("Bypass timed out."),
+                    task.wait(20),
+                    game:GetService("Players").LocalPlayer:Kick("Bypass timed out.")
+                }
+            end
+        end
+    end)
+ 
+    print("Replicated handshake.")
+end
+ 
+task.wait()
+ 
+print('Done! Now Loading')
+
+
+--> UI Initialization
+local MakoLib = loadstring(game:HttpGet("https://gist.githubusercontent.com/N2TheLegend/bc773f2cb81cff790e1929e40ce83664/raw/9746b17e8537d53cd32c45f311eb949f1b553f07/Mako.lua",true))()
+
+local Window = MakoLib:CreateWindow({
+    Title = "Solar Hub (BETA FOR MOBILE)"
+})
+
+local MainTab = Window:CreateTab("useful stuff", 13594361489)
+local MainTab2 = Window:CreateTab("Fun stuff", 13594361489)
+
+
+
+--> Section Stuff
+local Misc = MainTab:CreateSection("useful", 13585011079)
+local Misc2 = MainTab:CreateSection("used alot", 13585011079)
+local Misc3 = MainTab2:CreateSection("fun stuff", 13585011079)
+
+
+--> Variables For Callbacks
+
+    Misc:CreateToggle({
+        Title = "finish cap race",
+        Binding = false,
+        CurrentValue = false,
+        Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Models.LockerRoomA.FinishLine.CFrame + Vector3.new(0, 2, 0)
+    end})
+
+
+
+
+local connection
+local tprange = 0  -- Initialize tprange variable
+
+-- Define the toggle
+Misc:CreateToggle({
+    Title = "TP tackle",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(enabled)
+        if enabled then
+            connection = game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
+                for _, obj in ipairs(game.workspace:GetDescendants()) do
+                    if obj.Name == "Football" and obj:IsA("Tool") then
+                        local toolPosition = obj.Parent.HumanoidRootPart.Position
+                        local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                        if (toolPosition - playerPosition).Magnitude <= tprange then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.Parent.HumanoidRootPart.CFrame + Vector3.new(1, 1, 1)
+                        end
+                    end
+                end
+            end)
+        else
+            if connection then
+                connection:Disconnect()  -- Disconnect the mouse click event if it exists
+            end
+        end
+    end,
+})
+
+-- Define the slider
+Misc:CreateSlider({
+    Title = "Auto tackle range TP",
+    CurrentValue = 0,
+    Range = {0, 15},
+    Callback = function(value)
+        tprange = value
+    end,
+})
+
+    
+    
+
+
+
+
+
+
+
+    
+
+
+ 
+    
+    Misc:CreateToggle({
+        Title = "Enable Walkspeed",
+        Binding = false,
+        CurrentValue = false,
+        Callback = function(state)
+            getgenv().Walkspeed = state
+            while getgenv().Walkspeed == true do
+                game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = _G.SPEED
+                wait()
+            end
+            if getgenv().Walkspeed == false then
+                game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = 20
+            end
+        end,
+    })
+    
+    Misc:CreateToggle({
+        Title = "Enable JumpPower",
+        Binding = false,
+        CurrentValue = false,
+        Callback = function(state)
+            getgenv().JP = state
+            while getgenv().JP == true do
+                game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = _G.Jump
+                wait()
+            end
+            if getgenv().JP == false then
+                game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = 50
+            end
+        end,
+    })
+    
+    Misc:CreateSlider({
+        Title = "adjust walkspeed",
+        CurrentValue = 0,
+        Range = {20, 27},
+        Callback = function(value)
+            _G.SPEED = value
+        end,
+    })
+    
+    Misc:CreateSlider({
+        Title = "Adjust Jumppower",
+        CurrentValue = 0,
+        Range = {50, 65},
+        Callback = function(value)
+            _G.Jump = value
+        end,
+    })
+    
+
+  Misc:CreateToggle({
+        Title = "Auto qb",
+        Binding = false,
+        CurrentValue = false,
+        Callback = function(data)
+            local blacklisted = {"KICKOFF", "PUNT", "PAT"}
+            while true do
+                task.wait(1/30)
+                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and replicatedStorage.Values:FindFirstChild("Status") and replicatedStorage.Values.Status.Value == "PrePlay" and workspace:FindFirstChild("Football") and data.Enabled and not table.find(blacklisted, replicatedStorage.Values.StatusTag.Value) and replicatedStorage.Values.PossessionTag.Value == player.Team.Name then
+                    player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("Football").CFrame
+                    repeat task.wait() until not workspace:FindFirstChild("Football")
+                end
+            end
+        end
+    })
+
+
+
+
+
+
+
+
+
+
+
+    local autokick = false
+
+    task.spawn(function()
+        getgenv().Variables = {}
+    
+        Variables.Players = game:GetService("Players")
+        Variables.ReplicatedStorage = game:GetService("ReplicatedStorage")
+        Variables.UserInputService = game:GetService("UserInputService")
+        Variables.Client = Variables.Players.LocalPlayer
+        Variables.Character = Variables.Client.Character or Variables.Client.CharacterAdded:Wait()
+    
+        Variables.Client.CharacterAdded:Connect(function(Character)
+            Variables.Character = Character
+        end)
+    
+        local Aimbot = {}
+    
+        function Aimbot:GetAccuracyArrow(Arrows)
+            local Y = 0
+            local Arrow1 = nil
+    
+            for _, Arrow in pairs(Arrows) do
+                if Arrow.Position.Y.Scale > Y then
+                    Y = Arrow.Position.Y.Scale
+                    Arrow1 = Arrow
+                end
+            end
+    
+            return Arrow1
+        end
+    
+        Variables.Client.PlayerGui.ChildAdded:Connect(function(child)
+            if child.Name == "KickerGui" and autokick == true then
+                local KickerGui = child
+                local Meter = KickerGui:FindFirstChild("Meter")
+                local Cursor = Meter:FindFirstChild("Cursor")
+                local Arrows = {}
+    
+                for i, v in pairs(Meter:GetChildren()) do
+                    if string.find(v.Name:lower(), "arrow") then
+                        table.insert(Arrows, v)
+                    end
+                end
+    
+                repeat
+                    task.wait()
+                until Cursor.Position.Y.Scale < 0.02
+                mouse1click()
+                repeat
+                    task.wait()
+                until Cursor.Position.Y.Scale >= Aimbot:GetAccuracyArrow(Arrows).Position.Y.Scale + (.03 / (100 / 100))
+                mouse1click()
+            end
+        end)
+    end)
+    
+    Misc2:CreateToggle({
+        Title = "kick aimbot just tap once",
+        Binding = false,
+        CurrentValue = false,
+        Callback = function(state)
+            autokick = state
+        end
+    })
+    
+    Misc2:CreateSlider({
+        Title = "kick accuracy",
+        CurrentValue = 0,
+        Range = {0, 5},
+        Callback = function(value)
+            PerfectKick = v
+        end
+    })
+
+
+
+
+
+
+
+
+
+
+
+Misc:CreateToggle({
+    Title = "Anti Admin",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(v)
+        if v then
+            local moderators = {
+                "2618937233503944727",
+                "209187780079648778",
+                "265544447129812992",
+                "677964655821324329",
+                "469043698110562304",
+                "792145568586792979",
+                "490537796940070915",
+                "678699048844132362",
+                "837514415480897607",
+                "417141199564963840",
+                "580140563295109148",
+                "231225289718497281",
+                "719258236930228346",
+                "345362950380322829",
+                "513196564236468226",
+                "241945212463742986",
+                "153379470164623360",
+              }
+
+             for index, value in pairs(game:GetService("Players"):GetPlayers()) do
+                if table.find(moderators, value.UserId) then
+                    game:GetService("Players").LocalPlayer:kick("An Admin has joined! Make sure to keep this enabled for extra caution next time!")
+                end
+            end
+        end
+    end,
+})
+
+
+
+
+Misc:CreateToggle({
+    Title = "FPS Boost",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(v)
+        local decalsyeeted = v
+        local g = game
+        local w = g.Workspace
+        local l = g.Lighting
+        local t = w.Terrain
+        t.WaterWaveSize = 0
+        t.WaterWaveSpeed = 0
+        t.WaterReflectance = 0
+        t.WaterTransparency = 0
+        l.GlobalShadows = false
+        l.FogEnd = 9e9
+        l.Brightness = 0
+        settings().Rendering.QualityLevel = "Level01"
+        for i, v in pairs(g:GetDescendants()) do
+            if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+                v.Material = "Plastic"
+                v.Reflectance = 0
+            elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+                v.Transparency = 1
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                v.Lifetime = NumberRange.new(0)
+            elseif v:IsA("Explosion") then
+                v.BlastPressure = 1
+                v.BlastRadius = 1
+            elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+                v.Enabled = false
+            elseif v:IsA("MeshPart") then
+                v.Material = "Plastic"
+                v.Reflectance = 0
+                v.TextureID = 10385902758728957
+            end
+        end
+        for i, e in pairs(l:GetChildren()) do
+          if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+                e.Enabled = false
+            end
+        end
+    end,
+})
+
+
+
+
+
+local regtog = false -- Variable to track the toggle state
+
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remotes = replicatedStorage:FindFirstChild("Remotes")
+local characterSoundEvent = remotes:FindFirstChild("CharacterSoundEvent")
+local player = players.LocalPlayer
+local runService = game:GetService("RunService")
+
+local blatant = 0
+local universal = 0
+local uis = game:GetService("UserInputService")
+local uniDelay = 0
+local regDelay = 0
+--Regular
+-- Functions
+
+local Players = game:GetService("Players")
+local Mouse = Players.LocalPlayer:GetMouse()
+local numTeleports = 30 -- Define the number of teleports
+local tooggleEnabled = false -- Variable to track the toggle state
+
+local function universalcatch()
+	if tooggleEnabled then
+		local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
+
+		if not catchRight then
+			return
+		end
+
+		local closestFootball = nil
+		local closestDistance = math.huge
+
+		for i, v in pairs(game.Workspace:GetDescendants()) do
+			if v.Name == "Football" and v:IsA("BasePart") then
+				local distance = (v.Position - catchRight.Position).Magnitude
+				if distance < closestDistance and distance <= universal then
+					v.CanCollide = false
+					closestDistance = distance
+					closestFootball = v
+				end
+			end
+		end
+
+		if closestFootball then
+				wait(uniDelay)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
+			task.wait()
+		end
+	end
+end
+
+local regtog = false -- Variable to track the toggle state
+--ballgui
+local function teleportToClosestFootball()
+	if regtog == true then
+		task.wait()
+		uis.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
+
+				if not catchRight then
+					return
+				end
+
+				local closestFootball = nil
+				local closestDistance = math.huge
+
+				for i, v in pairs(game.Workspace:GetDescendants()) do
+					if v.Name == "Football" and v:IsA("BasePart") then
+						local distance = (v.Position - catchRight.Position).Magnitude
+						if distance < closestDistance and distance <= blatant then
+							v.CanCollide = false
+							closestDistance = distance
+							closestFootball = v
+						end
+					end
+				end
+
+				-- Teleport the closest football if found
+				if closestFootball then
+					for _ = 1, numTeleports do
+						if regtog == true then
+							wait(regDelay)
+							local tweenService = game:GetService("TweenService")
+							local tweenInfo = TweenInfo.new(.05, Enum.EasingStyle.Linear)
+							tweenService:Create(closestFootball, tweenInfo, {CFrame = catchRight.CFrame}):Play()
+							wait(.05)
+						end
+					end
+				end
+			end
+		end)
+	end
+end
+
+
+
+
+
+Misc2:CreateToggle({
+    Title = "Emulator mag test",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(v)
+        regtog = v
+        if regtog then
+            task.spawn(teleportToClosestFootball)
+        else
+            -- Stop the teleportation if the toggle is turned off
+            stopTeleportation()
+        end
+    end
+})
+
+
+Misc2:CreateSlider({
+    Title = "emulator mag delay",
+    CurrentValue = 0,
+    Range = {0, 1},
+    Callback = function(v)
+	regDelay = v
+end})
+
+Misc2:CreateSlider({
+    Title = "emulator mag distance",
+    CurrentValue = 0,
+    Range = {10, 250},
+    Callback = function(v)
+	blatant = v
+end})
+
+
+
+Misc2:CreateToggle({
+    Title = "mobile mag test",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(v)
+	tooggleEnabled = v
+	while tooggleEnabled == true do
+		task.wait()
+		universalcatch()
+	end
+end})
+
+Misc2:CreateSlider({
+    Title = "Mobile delay",
+    CurrentValue = 0,
+    Range = {0, 1},
+    Callback = function(v)
+	uniDelay = v
+end})
+
+Misc2:CreateSlider({
+    Title = "mobile mag distance",
+    CurrentValue = 0,
+    Range = {0, 25},
+    Callback = function(v)
+	universal = v
+end})
+
+
+
+
+
+local player = game.Players.LocalPlayer
+local runService = game:GetService("RunService")
+local PullVectorEnabled = false
+local PullVectorDistance = 10
+
+local function moveBall(ball)
+   if ball and player.Character then
+       local direction = (ball.Position - player.Character.HumanoidRootPart.Position).Unit
+       player.Character.HumanoidRootPart.Velocity = direction * 50  -- Adjust the velocity as desired
+   end
+end
+
+local function onRunServiceStepped()
+   if PullVectorEnabled then
+       for _, ball in ipairs(workspace:GetChildren()) do
+           if ball.Name == "Football" and ball:IsA("BasePart") then
+               local distance = (player.Character.HumanoidRootPart.Position - ball.Position).Magnitude
+               if distance < PullVectorDistance then
+                   moveBall(ball)
+               end
+           end
+       end
+   end
+end
+
+local SteppedConnection = nil
+
+Misc3:CreateToggle({
+    Title = "Pull vector BLATANT(10)",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+        PullVectorEnabled = state
+        if state then
+            SteppedConnection = runService.Stepped:Connect(onRunServiceStepped)
+        else
+            if SteppedConnection then
+                SteppedConnection:Disconnect()
+            end
+        end
+    end,
+})
+
+Misc3:CreateSlider({
+    Title = "pull vector distance",
+    CurrentValue = 0,
+    Range = {0, 50},
+    Callback = function(value)
+        PullVectorDistance = value
+    end,
+})
+
+local magnets = true
+local MaxDistance = 50 -- Biggest Range Firetouch can go
+local MinFootballSize = 5 
+local player = game:GetService("Players").LocalPlayer
+
+local function CatchFootball()
+    while magnets do
+        wait()
+        local football = game.Workspace:WaitForChild("Football")
+        local humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        for index, football in ipairs(workspace:GetChildren()) do
+            if football.Name == "Football" and football:IsA("BasePart") and not football.Anchored then
+                local mag = (football.Position - humanoid.Position).magnitude
+                local footballSize = football.Size.Magnitude
+
+                if mag <= MaxDistance and footballSize <= MinFootballSize then
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 1)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 1)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                end
+            end
+        end
+    end
+end
+
+Misc3:CreateToggle({
+    Title = "football reach BLATANT",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+           magnets = state
+        if magnets then
+            CatchFootball()
+        end
+    end,
+})
+
+local AutoFollowQb = false
+local followCarrierTask
+
+local function FollowCarrier()
+    while AutoFollowQb do
+        local carrier = game:GetService("ReplicatedStorage").Values.Carrier.Value
+        if carrier and carrier:IsDescendantOf(game.Players) and carrier.Team ~= game.Players.LocalPlayer.Team then
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:MoveTo(carrier.Character.Torso.Position)
+            end
+        end
+        wait()
+    end
+end
+
+local function ToggleFollowCarrier(value)
+    AutoFollowQb = value
+    if value then
+        followCarrierTask = task.spawn(FollowCarrier)
+    else
+        if followCarrierTask then
+            followCarrierTask:cancel()
+        end
+    end
+end
+
+Misc3:CreateToggle({
+    Title = "auto follow qb",
+      Binding = false,
+      CurrentValue = false,
+      Callback = ToggleFollowCarrier,
+})
+
+
+Misc3:CreateSlider({
+    Title = "qb follow dist pc better",
+    CurrentValue = 0,
+    Range = {0, 15},
+    Callback = function(set)
+
+end,
+})
+
+local function toggleState(v)
+    local state = v
+    local transparency = state and 0.5 or 0
+    local model = game:GetService("Workspace").Models.Field.Grass
+    
+    for _, part in pairs(model:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not state
+            part.Transparency = transparency
+        end
+    end
+    
+    if state then
+        local part = Instance.new("Part")
+        part.Size = Vector3.new(500, 0.001, 500)
+        part.CFrame = CFrame.new(Vector3.new(10.3562937, -1.51527438, 30.4708614))
+        part.Anchored = true
+        part.Parent = game.Workspace
+    
+        local Anim = Instance.new("Animation")
+        Anim.AnimationId = "rbxassetid://"
+        local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+        track:Play(.1, 1, 1)
+    else
+        if track ~= nil then
+            track:Stop()
+        end
+    end
+end
+
+Misc3:CreateToggle({
+    Title = "underground patched sorta work",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(v)
+        toggleState(v)
+    end
+})
+Misc3:CreateToggle({
+    Title = "anti oob",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+        getgenv().Shit = state
+    end,
+})
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+local function teleportInFront()
+    local forwardDirection = rootPart.CFrame.lookVector
+    local teleportOffset = forwardDirection * 5 -- You can change the distance (5 studs) as needed
+
+    local newPosition = rootPart.Position + teleportOffset
+    rootPart.CFrame = CFrame.new(newPosition)
+end
+
+local UserInputService = game:GetService("UserInputService")
+
+local quickTPToggle = false
+
+Misc3:CreateToggle({
+    Title = "quick tp hit F",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+        quickTPToggle = state
+    end
+})
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.F and quickTPToggle then
+        teleportInFront()
+    end
+end)
+
+
+Misc3:CreateToggle({
+    Title = "no bounds",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+        pass.nobounds_enabled = state
+    end
+})
+
+coroutine.resume(
+    coroutine.create(
+        function()
+            repeat
+                wait(.25)
+            until Era_READY and ERA and ERA.nobounds_enabled
+            while wait() do
+                local s, e =
+                    pcall(
+                    function()
+                        if pass.nobounds_enabled then
+                            local bounds = workspace.Models:FindFirstChild("Boundaries")
+                            bounds:ClearAllChildren()
+                        end
+                    end
+                )
+                if not s then
+                    warn(e)
+                end
+            end
+        end
+    )
+)
+
+Misc3:CreateToggle({
+    Title = "forward passed",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(state)
+        pass.illegalForwardPass_enabled = state
+    end
+})
+
+coroutine.resume(
+    coroutine.create(
+        function()
+            repeat
+                wait(.25)
+            until Era_READY and ERA and ERA.illegalForwardPass_enabled
+            local wall = workspace:WaitForChild("LineDownWall")
+            local _wall = wall:Clone()
+            _wall.Parent = workspace
+            while wait() do
+                _wall.Position = workspace:WaitForChild("LineDown").Position
+                _wall.CanCollide = values.Status.Value == "PrePlay"
+                local hasball = (values.QB.Value == plr and values.Carrier.Value == plr)
+                if pass.illegalForwardPass_enabled and wall and hasball and values.Status.Value == "InPlay" then
+                    wall.Parent = nil
+                else
+                    wall.Parent = workspace
+                end
+            end
+        end
+    )
+)
