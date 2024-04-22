@@ -99,31 +99,19 @@ print('Done! Now Loading')
 local MakoLib = loadstring(game:HttpGet("https://gist.githubusercontent.com/N2TheLegend/bc773f2cb81cff790e1929e40ce83664/raw/9746b17e8537d53cd32c45f311eb949f1b553f07/Mako.lua",true))()
 
 local Window = MakoLib:CreateWindow({
-    Title = "Solar hub CREDITS TO MAKO FOR THE LIB"
+    Title = "Solar Hub (BETA FOR MOBILE)"
 })
 
 local MainTab = Window:CreateTab("Main", 13594361489)
-local CharacterTab = Window:CreateTab("Player", 13585011079)
-local PhysicsTab = Window:CreateTab("Physics")
+
+
 
 --> Section Stuff
-local FootballMagnents = MainTab:CreateSection("Magnents", 13594361489)
-local PassingStuff = MainTab:CreateSection("kick", 13594361489)
-local Physics = PhysicsTab:CreateSection("Physics")
-local Misc = CharacterTab:CreateSection("Misc", 13585011079)
-local Movement = CharacterTab:CreateSection("Movement", 13585011079)
+local Misc = MainTab:CreateSection("main", 13585011079)
+local Misc2 = MainTab:CreateSection("main", 13585011079)
+
 
 --> Variables For Callbacks
-
-
-
-
-
-
-
-
-
-
 
     Misc:CreateToggle({
         Title = "finish cap race",
@@ -136,103 +124,50 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
 
-    local connection
+local connection
+local tprange = 0  -- Initialize tprange variable
 
-    Physics:CreateToggle({
-        Title = "TP tackle",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(v)
-        if v then
+-- Define the toggle
+Misc:CreateToggle({
+    Title = "TP tackle",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(enabled)
+        if enabled then
             connection = game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
-                for i, v in pairs(game.workspace:GetDescendants()) do
-                    if v.Name == "Football" and v:IsA("Tool") then
-                        local toolPosition = v.Parent.HumanoidRootPart.Position
+                for _, obj in ipairs(game.workspace:GetDescendants()) do
+                    if obj.Name == "Football" and obj:IsA("Tool") then
+                        local toolPosition = obj.Parent.HumanoidRootPart.Position
                         local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
                         if (toolPosition - playerPosition).Magnitude <= tprange then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Parent.HumanoidRootPart.CFrame + Vector3.new(1, 1, 1)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.Parent.HumanoidRootPart.CFrame + Vector3.new(1, 1, 1)
                         end
                     end
                 end
             end)
         else
             if connection then
-                connection:Disconnect() -- Disconnect the mouse click event only if it exists
+                connection:Disconnect()  -- Disconnect the mouse click event if it exists
             end
         end
-    end})
+    end,
+})
+
+-- Define the slider
+Misc:CreateSlider({
+    Title = "Auto tackle range TP",
+    CurrentValue = 0,
+    Range = {0, 15},
+    Callback = function(value)
+        tprange = value
+    end,
+})
+
     
-    Physics:CreateSlider({
-        Title = "Auto tackle range tp",
-        CurrentValue = 0,
-        Range = {0, 15},
-        Callback = function(v)
-        tprange = v
-    end})
     
 
 
 
-
-    Physics:CreateToggle({
-        Title = "predicted jump locations",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(v)
-        if v then
-        local plr = game.Players.LocalPlayer
-
-            local function handleBall(ball)
-                if ball.Name == "Football" and ball:IsA("BasePart") then
-                    local v0 = ball.Velocity
-                    local x0 = ball.Position
-                    local dt = 1/30
-                    local grav = Vector3.new(0, -28, 0)
-                    local points = {
-                        [1] = x0
-                    }
-                    local function check(p, v0)
-                        local raycastParams = RaycastParams.new()
-                        raycastParams.RespectCanCollide = true
-                        local ray = workspace:Raycast(p, Vector3.new(0, -1000, 0), raycastParams)
-                        local ray2 = workspace:Raycast(p, Vector3.new(0, -7.2 * 2, 0), raycastParams)
-                        return ray and not ray2
-                    end
-                    while true do
-                        if not check(points[#points], v0) then
-                            if v0.Y < 0 then
-                                break
-                            end
-                        end
-                        local currentPoint = points[#points]
-                        v0 += grav * dt
-                        points[#points + 1] = currentPoint + (v0 * dt)
-                    end
-                    local optimal = points[#points]
-                    local part = Instance.new("Part")
-                    part.Anchored = true
-                    part.CanCollide = false
-                    part.Position = Vector3.new(optimal.X, player.Character.HumanoidRootPart.Position.Y + 1.5, optimal.Z)
-                    part.Parent = workspace
-                    part.Material = Enum.Material.Neon
-                    part.Size = Vector3.new(1.5, 1.5, 1.5)
-                    repeat task.wait() until ball.Parent ~= workspace
-                    part:Destroy()
-                end
-            end
-    
-            local function handleChildAdded(ball)
-                task.wait()
-                handleBall(ball)
-            end
-            eventConnection = workspace.ChildAdded:Connect(handleChildAdded)
-        else
-            if eventConnection then
-                eventConnection:Disconnect()
-                eventConnection = nil
-            end
-        end
-    end})
 
 
 
@@ -242,7 +177,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
  
     
-    Movement:CreateToggle({
+    Misc:CreateToggle({
         Title = "Enable Walkspeed",
         Binding = false,
         CurrentValue = false,
@@ -258,7 +193,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         end,
     })
     
-    Movement:CreateToggle({
+    Misc:CreateToggle({
         Title = "Enable JumpPower",
         Binding = false,
         CurrentValue = false,
@@ -274,7 +209,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         end,
     })
     
-    Movement:CreateSlider({
+    Misc:CreateSlider({
         Title = "adjust walkspeed",
         CurrentValue = 0,
         Range = {20, 27},
@@ -283,7 +218,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         end,
     })
     
-    Movement:CreateSlider({
+    Misc:CreateSlider({
         Title = "Adjust Jumppower",
         CurrentValue = 0,
         Range = {50, 65},
@@ -375,8 +310,8 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         end)
     end)
     
-    PassingStuff:CreateToggle({
-        Title = "kick aimbot",
+    Misc2:CreateToggle({
+        Title = "kick aimbot just tap once",
         Binding = false,
         CurrentValue = false,
         Callback = function(state)
@@ -384,7 +319,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         end
     })
     
-    PassingStuff:CreateSlider({
+    Misc2:CreateSlider({
         Title = "kick accuracy",
         CurrentValue = 0,
         Range = {0, 5},
@@ -394,42 +329,6 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
     })
 
 
-    local block = false
-    local blockslider = 1.5
-    local defaultSize = Vector3.new(0.75, 5, 1.5)
-    
-    local function setBlockSize()
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("BlockPart") then
-            game.Players.LocalPlayer.Character.BlockPart.Size = Vector3.new(blockslider, 5, blockslider)
-        end
-    end
-    
-    Physics:CreateToggle({
-        Title = "Block reach",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(state)
-            block = state
-            if block then
-                setBlockSize()
-            else
-                game.Players.LocalPlayer.Character.BlockPart.Size = defaultSize
-                blockslider = 1.5
-            end
-        end,
-    })
-    
-    Physics:CreateSlider({
-        Title = "block distance",
-        CurrentValue = 0,
-        Range = {1, 25},
-        Callback = function(set)
-            blockslider = set
-            if block then
-                setBlockSize()
-            end
-        end,
-    })
 
 
 
@@ -475,28 +374,7 @@ Misc:CreateToggle({
 })
 
 
-Misc:CreateToggle({
-    Title = "Change Weather To Rain",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(value)
-        IsSnow = value 
 
-        if IsSnow  == true then
-            for i,v in pairs(workspace.SkyWeather:GetChildren()) do
-                if v.Name == "Snow" then
-                    v.Enabled = true
-                end
-            end
-        else
-            for i,v in pairs(workspace.SkyWeather:GetChildren()) do
-                if v.Name == "Snow" then
-                    v.Enabled = false
-                end
-            end
-        end
-    end,
-})
 
 Misc:CreateToggle({
     Title = "FPS Boost",
@@ -544,72 +422,65 @@ Misc:CreateToggle({
 })
 
 
-Misc:CreateToggle({
-  Title = "Underground patched rn",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(state)
-        state = state
-        local function toggleField(state)
-            local model = game.Workspace.Models.Field.Grass
-            local transparency = state and 1 or 0
-            for _, part in pairs(model:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = not state
-                    part.Transparency = transparency
-                end
-            end
-
-            if state then
-                local platform = Instance.new("Part")
-                platform.Size = Vector3.new(500, 0.001, 500)
-                platform.Position = Vector3.new(10.3562937, -2.51527438, 30.4708614)
-                platform.Anchored = true
-                platform.Parent = game.Workspace
-
-                local colors = {
-                    BrickColor.new("Light gray")
-                }
-
-                local currentIndex = 1
-
-                while state do
-                    platform.BrickColor = colors[currentIndex]
-                    currentIndex = currentIndex % #colors + 1
-
-                    wait(1)
-
-                end
-            end
-        end
-
-        toggleField(state)
-
-    local plr = game.Players.LocalPlayer
-            local character = player.Character
-
-        local function setPlayerTransparency(transparency)
-            for _, part in ipairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.Transparency = transparency
-                end
-            end
-        end
-
-        setPlayerTransparency(0.6)
-    end,
-})
 
 
 
+local regtog = false -- Variable to track the toggle state
 
-
-
-
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remotes = replicatedStorage:FindFirstChild("Remotes")
+local characterSoundEvent = remotes:FindFirstChild("CharacterSoundEvent")
+local player = players.LocalPlayer
+local runService = game:GetService("RunService")
 
 local blatant = 0
+local universal = 0
 local uis = game:GetService("UserInputService")
+local uniDelay = 0
 local regDelay = 0
+--Regular
+-- Functions
+
+local Players = game:GetService("Players")
+local Mouse = Players.LocalPlayer:GetMouse()
+local numTeleports = 30 -- Define the number of teleports
+local tooggleEnabled = false -- Variable to track the toggle state
+
+local function universalcatch()
+	if tooggleEnabled then
+		local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
+
+		if not catchRight then
+			return
+		end
+
+		local closestFootball = nil
+		local closestDistance = math.huge
+
+		for i, v in pairs(game.Workspace:GetDescendants()) do
+			if v.Name == "Football" and v:IsA("BasePart") then
+				local distance = (v.Position - catchRight.Position).Magnitude
+				if distance < closestDistance and distance <= universal then
+					v.CanCollide = false
+					closestDistance = distance
+					closestFootball = v
+				end
+			end
+		end
+
+		if closestFootball then
+				wait(uniDelay)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
+			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
+			task.wait()
+		end
+	end
+end
+
 local regtog = false -- Variable to track the toggle state
 --ballgui
 local function teleportToClosestFootball()
@@ -657,7 +528,7 @@ end
 
 
 
-FootballMagnents:CreateToggle({
+Misc2:CreateToggle({
     Title = "mag test",
       Binding = false,
       CurrentValue = false,
@@ -673,7 +544,7 @@ FootballMagnents:CreateToggle({
 })
 
 
-FootballMagnents:CreateSlider({
+Misc2:CreateSlider({
     Title = "mag delay",
     CurrentValue = 0,
     Range = {0, 1},
@@ -681,11 +552,12 @@ FootballMagnents:CreateSlider({
 	regDelay = v
 end})
 
-FootballMagnents:CreateSlider({
+Misc2:CreateSlider({
     Title = "mag distance",
     CurrentValue = 0,
-    Range = {1, 100},
+    Range = {10, 250},
     Callback = function(v)
 	blatant = v
 end})
+
 
