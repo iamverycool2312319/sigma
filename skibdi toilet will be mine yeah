@@ -174,7 +174,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
     local swatreachmain = false
-    local player = game.Players.LocalPlayer
+local plr = game.Players.LocalPlayer
     local swatDistance = math.huge
     local swatted = false
     local userInputService = game:GetService("UserInputService")
@@ -272,8 +272,8 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
     
     local function autoswatfunction()
         if enabledd then
-            local player = game.Players.LocalPlayer
-            local character = player.Character or player.CharacterAdded:Wait()
+        local plr = game.Players.LocalPlayer
+                    local character = player.Character or player.CharacterAdded:Wait()
             local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
             local RunService = game:GetService("RunService")
     
@@ -325,8 +325,8 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
         CurrentValue = false,
         Callback = function(v)
         if v then
-            local player = game.Players.LocalPlayer
-    
+        local plr = game.Players.LocalPlayer
+            
             local function handleBall(ball)
                 if ball.Name == "Football" and ball:IsA("BasePart") then
                     local v0 = ball.Velocity
@@ -418,7 +418,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
     })
     
 
-    local player = game.Players.LocalPlayer
+local plr = game.Players.LocalPlayer
     local userInputService = game:GetService("UserInputService")
     local runService = game:GetService("RunService")
     
@@ -470,7 +470,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
     })
     
 
-    local player = game.Players.LocalPlayer
+local plr = game.Players.LocalPlayer
     local runService = game:GetService("RunService")
     
     local lagEffectEnabled = false  -- Initial state of the lag effect toggle
@@ -625,7 +625,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
 
-    local player = game.Players.LocalPlayer
+local plr = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     
     local moveDistance = 5
@@ -930,8 +930,8 @@ Misc:CreateToggle({
 
         toggleField(state)
 
-        local player = game.Players.LocalPlayer
-        local character = player.Character
+    local plr = game.Players.LocalPlayer
+            local character = player.Character
 
         local function setPlayerTransparency(transparency)
             for _, part in ipairs(character:GetDescendants()) do
