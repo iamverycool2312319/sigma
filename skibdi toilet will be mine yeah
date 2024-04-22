@@ -240,44 +240,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
     
 
 
-    local UserInputService = game:GetService("UserInputService")
-    local JumpPowerMultiplier = 1.5  -- Default jump height multiplier
-    local OriginalJumpPower = game.Players.LocalPlayer.Character.Humanoid.JumpPower
-    local JumpToggleEnabled = false
-    
-    local function OnJumpRequest(actionName, inputState, inputObject)
-        if inputState == Enum.UserInputState.Begin then
-            local character = game.Players.LocalPlayer.Character
-            local humanoid = character and character:FindFirstChild("Humanoid")
-            
-            if humanoid then
-                humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-                humanoid:Move(Vector3.new(0, humanoid.JumpPower, 0))  -- Perform a standard jump
-            end
-        end
-    end
-    
-    Movement:CreateToggle({
-        Title = "BIG JUMP BOOST",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(state)
-            JumpToggleEnabled = state
-            local character = game.Players.LocalPlayer.Character
-            if character then
-                local humanoid = character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid.JumpPower = state and OriginalJumpPower * JumpPowerMultiplier or OriginalJumpPower
-                end
-            end
-        end,
-    })
-    
-    UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-        if not gameProcessedEvent and JumpToggleEnabled and input.KeyCode == Enum.KeyCode.Space then
-            OnJumpRequest()
-        end
-    end)
+ 
     
     Movement:CreateToggle({
         Title = "Enable Walkspeed",
@@ -350,40 +313,7 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
 
-local plr = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    
-    local moveDistance = 5
-    local isEnabled = false
-    
-    
-    local function moveCharacter()
-        local newPosition = character.PrimaryPart.Position + character.PrimaryPart.CFrame.lookVector * moveDistance
-        character:SetPrimaryPartCFrame(CFrame.new(newPosition))
-    end
-    
-    
-    local function toggleCallback(value)
-        isEnabled = value
-    end
-    
-    
-    local function onKeyPress(input)
-        if isEnabled and input.KeyCode == Enum.KeyCode.F then
-            moveCharacter()
-        end
-    end
-    
-    local UserInputService = game:GetService("UserInputService")
-    UserInputService.InputBegan:Connect(onKeyPress)
-    
-    
-    Movement:CreateToggle({
-        Title = "click f to tp",
-        Binding = false,
-        CurrentValue = false,
-        Callback = toggleCallback
-    })
+
 
 
 
@@ -669,4 +599,6 @@ Misc:CreateToggle({
         setPlayerTransparency(0.6)
     end,
 })
+
+
 
