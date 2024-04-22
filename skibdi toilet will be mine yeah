@@ -585,7 +585,7 @@ end})
 Misc2:CreateSlider({
     Title = "mobile mag distance",
     CurrentValue = 0,
-    Range = {0, 25},
+    Range = {0, 60},
     Callback = function(v)
 	universal = v
 end})
