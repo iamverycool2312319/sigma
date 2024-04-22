@@ -944,6 +944,3 @@ Misc:CreateToggle({
         setPlayerTransparency(0.6)
     end,
 })
-
-
-
