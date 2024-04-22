@@ -1,4 +1,6 @@
-
+print('Initializing AC Bypass!')
+ 
+--// Services
 local Players = cloneref(game:GetService("Players"))
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -9,7 +11,9 @@ local Stats = cloneref(game:GetService("Stats"))
 local RunService = cloneref(game:GetService("RunService"))
  
 if game.PlaceId ~= 8206123457 or game.PlaceId == 8204899140 then
-
+    --> Made by Unlimited, Modified/Updated by NG/Johan Peterson
+ 
+    --// Services
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
  
     --// Variables
@@ -110,154 +114,6 @@ local Misc = CharacterTab:CreateSection("Misc", 13585011079)
 local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 --> Variables For Callbacks
-
-
-
-
-
-
-
-
-local regtog = false -- Variable to track the toggle state
-
-local players = game:GetService("Players")
-local userInputService = game:GetService("UserInputService")
-local replicatedStorage = game:GetService("ReplicatedStorage")
-local remotes = replicatedStorage:FindFirstChild("Remotes")
-local characterSoundEvent = remotes:FindFirstChild("CharacterSoundEvent")
-local player = players.LocalPlayer
-local runService = game:GetService("RunService")
-
-local blatant = 0
-local universal = 0
-local uis = game:GetService("UserInputService")
-local uniDelay = 0
-local regDelay = 0
---Regular
--- Functions
-
-local Players = game:GetService("Players")
-local Mouse = Players.LocalPlayer:GetMouse()
-local numTeleports = 30 -- Define the number of teleports
-local tooggleEnabled = false -- Variable to track the toggle state
-
-local function universalcatch()
-	if tooggleEnabled then
-		local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
-
-		if not catchRight then
-			return
-		end
-
-		local closestFootball = nil
-		local closestDistance = math.huge
-
-		for i, v in pairs(game.Workspace:GetDescendants()) do
-			if v.Name == "Football" and v:IsA("BasePart") then
-				local distance = (v.Position - catchRight.Position).Magnitude
-				if distance < closestDistance and distance <= universal then
-					v.CanCollide = false
-					closestDistance = distance
-					closestFootball = v
-				end
-			end
-		end
-
-		if closestFootball then
-				wait(uniDelay)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
-			task.wait()
-		end
-	end
-end
-
-local regtog = false -- Variable to track the toggle state
---ballgui
-local function teleportToClosestFootball()
-	if regtog == true then
-		task.wait()
-		uis.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
-
-				if not catchRight then
-					return
-				end
-
-				local closestFootball = nil
-				local closestDistance = math.huge
-
-				for i, v in pairs(game.Workspace:GetDescendants()) do
-					if v.Name == "Football" and v:IsA("BasePart") then
-						local distance = (v.Position - catchRight.Position).Magnitude
-						if distance < closestDistance and distance <= blatant then
-							v.CanCollide = false
-							closestDistance = distance
-							closestFootball = v
-						end
-					end
-				end
-
-				-- Teleport the closest football if found
-				if closestFootball then
-					for _ = 1, numTeleports do
-						if regtog == true then
-							wait(regDelay)
-							local tweenService = game:GetService("TweenService")
-							local tweenInfo = TweenInfo.new(.05, Enum.EasingStyle.Linear)
-							tweenService:Create(closestFootball, tweenInfo, {CFrame = catchRight.CFrame}):Play()
-							wait(.05)
-						end
-					end
-				end
-			end
-		end)
-	end
-end
-
-
-
-
--- Start
-
-local plr = game.Players.LocalPlayer
-local rs = game:GetService("RunService")
-
-
-FootballMagnents:CreateToggle({
-    Title = "MagV1",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(v)
-	tooggleEnabled = v
-	while tooggleEnabled == true do
-		task.wait()
-		universalcatch()
-	end
-end})
-
-FootballMagnents:CreateSlider({
-    Title = "mag delay",
-    CurrentValue = 0,
-    Range = {0, 10},
-    Callback = function(v)
-	uniDelay = v
-end})
-
-FootballMagnents:CreateSlider({
-    Title = "mag range",
-    CurrentValue = 0,
-    Range = {0, 60},
-    Callback = function(v)
-	universal = v
-end})
-
-
-
-
 
 
 
@@ -1090,4 +946,4 @@ Misc:CreateToggle({
 })
 
 
-print("fucking bitch")
+
