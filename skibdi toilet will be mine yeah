@@ -236,139 +236,9 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
 
-    local isAntiJamEnabled = false
 
-    local function updateCollisionState()
-        while true do
-            if isAntiJamEnabled then
-                if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Head") and game.Players.LocalPlayer.Character.Head.CanCollide then
-                    for _, player in ipairs(game.Players:GetPlayers()) do
-                        if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-                            pcall(function()
-                                player.Character:FindFirstChild("Torso").CanCollide = false
-                                player.Character.Head.CanCollide = false
-                            end)
-                        end
-                    end
-                end
-            else
-                if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Head") and not game.Players.LocalPlayer.Character.Head.CanCollide then
-                    game.Players.LocalPlayer.Character:FindFirstChild("Torso").CanCollide = true
-                    game.Players.LocalPlayer.Character.Head.CanCollide = true
-                end
-            end
-            task.wait()
-        end
-    end
-    
-    spawn(updateCollisionState)
-    
-    FootballMagnents:CreateToggle({
-        Title = "Anti-Jam",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(enabled)
-            isAntiJamEnabled = enabled
-        end
-    })
     
 
-local plr = game.Players.LocalPlayer
-    local userInputService = game:GetService("UserInputService")
-    local runService = game:GetService("RunService")
-    
-    local jumpCooldown = 0.5  -- Adjust this value based on your game's mechanics
-    local lastJumpTime = 0
-    local antiAceEnabled = false  -- Initial state of the anti ace toggle
-    
-    local function PerformJump()
-        -- Perform the jump action
-        -- You might want to adjust the code here to simulate jumping
-    end
-    
-    local function PerformDive()
-        -- Perform the dive action
-        -- You might want to adjust the code here to simulate diving
-    end
-    
-    userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-        if not gameProcessedEvent and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
-            if antiAceEnabled then
-                local currentTime = tick()
-                if currentTime - lastJumpTime > jumpCooldown then
-                    PerformJump()
-                    lastJumpTime = currentTime
-                else
-                    PerformDive()
-                end
-            else
-                -- Perform the default jump or dive action
-            end
-        end
-    end)
-    
-    runService.RenderStepped:Connect(function()
-        if antiAceEnabled then
-            -- Check for the appropriate condition to trigger the automatic dive
-            -- For example, if you detect that the character is in mid-air and has jumped
-            -- Implement the automatic dive action here
-        end
-    end)
-    
-    FootballMagnents:CreateToggle({
-        Title = "anti ace",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(state)
-            antiAceEnabled = state
-        end,
-    })
-    
-
-local plr = game.Players.LocalPlayer
-    local runService = game:GetService("RunService")
-    
-    local lagEffectEnabled = false  -- Initial state of the lag effect toggle
-    local lagMultiplier = 0.5  -- Adjust this value to control the lag effect strength
-    
-    local function ApplyLagEffect()
-        local character = player.Character
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                local rootPart = character:FindFirstChild("HumanoidRootPart")
-                if rootPart then
-                    -- Apply lag effect by reducing the character's velocity
-                    local currentVelocity = rootPart.Velocity
-                    rootPart.Velocity = currentVelocity * lagMultiplier
-                end
-            end
-        end
-    end
-    
-    runService.RenderStepped:Connect(function()
-        if lagEffectEnabled then
-            ApplyLagEffect()
-        end
-    end)
-    
-    Misc:CreateToggle({
-        Title = "Make you look laggy",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(state)
-            lagEffectEnabled = state
-        end,
-    })
-    
-    Misc:CreateSlider({
-        Title = "Lag Adjust",
-        CurrentValue = lagMultiplier,
-        Range = {0, 1},
-        Callback = function(value)
-            lagMultiplier = value
-        end,
-    })
 
     local UserInputService = game:GetService("UserInputService")
     local JumpPowerMultiplier = 1.5  -- Default jump height multiplier
@@ -799,6 +669,4 @@ Misc:CreateToggle({
         setPlayerTransparency(0.6)
     end,
 })
-
-
 
