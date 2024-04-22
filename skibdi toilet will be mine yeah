@@ -102,66 +102,18 @@ local Window = MakoLib:CreateWindow({
     Title = "Saturn Hub (BETA FOR MOBILE)"
 })
 
-local MainTab = Window:CreateTab("Main", 13594361489)
+local MainTab = Window:CreateTab("Saturn hub", 13594361489)
 
 
 
 --> Section Stuff
-local Misc = MainTab:CreateSection("main", 13585011079)
-local Misc2 = MainTab:CreateSection("main", 13585011079)
+local Misc = MainTab:CreateSection("fun stuff", 13585011079)
+local Misc2 = MainTab:CreateSection("MAIN STUFF", 13585011079)
 
 
 --> Variables For Callbacks
 
-    Misc:CreateToggle({
-        Title = "finish cap race",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Models.LockerRoomA.FinishLine.CFrame + Vector3.new(0, 2, 0)
-    end})
 
-
-
-
-local connection
-local tprange = 0  -- Initialize tprange variable
-
--- Define the toggle
-Misc:CreateToggle({
-    Title = "TP tackle",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(enabled)
-        if enabled then
-            connection = game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
-                for _, obj in ipairs(game.workspace:GetDescendants()) do
-                    if obj.Name == "Football" and obj:IsA("Tool") then
-                        local toolPosition = obj.Parent.HumanoidRootPart.Position
-                        local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-                        if (toolPosition - playerPosition).Magnitude <= tprange then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.Parent.HumanoidRootPart.CFrame + Vector3.new(1, 1, 1)
-                        end
-                    end
-                end
-            end)
-        else
-            if connection then
-                connection:Disconnect()  -- Disconnect the mouse click event if it exists
-            end
-        end
-    end,
-})
-
--- Define the slider
-Misc:CreateSlider({
-    Title = "Auto tackle range TP",
-    CurrentValue = 0,
-    Range = {0, 15},
-    Callback = function(value)
-        tprange = value
-    end,
-})
 
     
     
@@ -174,8 +126,6 @@ Misc:CreateSlider({
 
     
 
-
- 
     
     Misc:CreateToggle({
         Title = "Enable Walkspeed",
@@ -589,3 +539,5 @@ Misc2:CreateSlider({
     Callback = function(v)
 	universal = v
 end})
+
+--tp
