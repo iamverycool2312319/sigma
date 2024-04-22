@@ -173,151 +173,6 @@ local Movement = CharacterTab:CreateSection("Movement", 13585011079)
 
 
 
-    local swatreachmain = false
-local plr = game.Players.LocalPlayer
-    local swatDistance = math.huge
-    local swatted = false
-    local userInputService = game:GetService("UserInputService")
-    
-    local function isFootball(fb)
-        return fb and fb:FindFirstChildWhichIsA("RemoteEvent")
-    end
-    
-    local function getNearestBall(checkFunc)
-        local lowestDistance = math.huge
-        local lowestFB = nil
-        for index, part in pairs(workspace:GetChildren()) do
-            if isFootball(part) and not part.Anchored then
-                if checkFunc then
-                    if not checkFunc(part) then
-                        continue
-                    end
-                end
-                local distance = (player.Character.HumanoidRootPart.Position - part.Position).Magnitude
-                if distance < lowestDistance then
-                    lowestFB = part
-                    lowestDistance = distance
-                end
-            end
-        end
-        return lowestFB, lowestDistance
-    end
-    
-    local function getNearestPartToPartFromParts(parts, part)
-        local lowestMagnitude = math.huge
-        local lowestPart = nil
-        for index, p in pairs(parts) do
-            local dis = (part.Position - p.Position).Magnitude
-            if dis < lowestMagnitude then
-                lowestMagnitude = dis
-                lowestPart = p
-            end
-        end
-        return lowestPart
-    end
-    
-    local function initCharacter(char)
-        while swatreachmain do
-            task.wait()
-            local ball = getNearestBall()
-            if ball and swatted then
-                local distance = (player.Character.HumanoidRootPart.Position - ball.Position).Magnitude
-                if distance < swatDistance then
-                    local catch = getNearestPartToPartFromParts({player.Character["CatchLeft"], player.Character["CatchRight"]}, ball)
-                    firetouchinterest(ball, catch, 0)
-                    firetouchinterest(ball, catch, 1)
-                end
-            end
-        end
-    end
-    
-    userInputService.InputBegan:Connect(function(input, gp)
-        if not gp then
-            if input.KeyCode == Enum.KeyCode.R and not swatted then
-                swatted = true
-                task.wait(1.5)
-                swatted = false
-            end
-        end
-    end)
-    
-    local function updateCharacter(character)
-        if swatreachmain then
-            initCharacter(character)
-        end
-    end
-    
-    player.CharacterAdded:Connect(updateCharacter)
-    --slider
-    Physics:CreateToggle({
-        Title = "swat reach",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(value)
-        swatreachmain = value
-        if value then
-            updateCharacter(player.Character) 
-        end
-    end})
-    
-    if swatreachmain then
-        initCharacter(player.Character)
-    end
-    
-    -- Auto Swat
-    
-    local autoswatv = 0
-    
-    local enabledd = false
-    
-    local function autoswatfunction()
-        if enabledd then
-        local plr = game.Players.LocalPlayer
-                    local character = player.Character or player.CharacterAdded:Wait()
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-            local RunService = game:GetService("RunService")
-    
-            local function checkDistance(part)
-                local distance = (part.Position - humanoidRootPart.Position).Magnitude
-                if distance <= autoswatv then
-                    keypress(0x52)
-                    keyrelease(0x52)
-                    task.wait()
-                end
-            end
-            local function updateDistances()
-                for _, v in pairs(game.Workspace:GetDescendants()) do
-                    if v.Name == "Football" and v:IsA("BasePart") then
-                        checkDistance(v)
-                    end
-                end
-            end
-            connection = RunService.Heartbeat:Connect(updateDistances)
-        else
-            if connection then
-                connection:Disconnect()
-                connection = nil
-            end
-        end
-    end
-    --uni
-    Physics:CreateToggle({
-        Title = "auto swat",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(v)
-        enabledd = v
-        autoswatfunction()
-    end})
-    
-    Physics:CreateSlider({
-        Title = "swat distance",
-        CurrentValue = 0,
-        Range = {0, 45},
-        Callback = function(v)
-        autoswatv = v
-    end})
-
 
     Physics:CreateToggle({
         Title = "predicted jump locations",
@@ -326,7 +181,7 @@ local plr = game.Players.LocalPlayer
         Callback = function(v)
         if v then
         local plr = game.Players.LocalPlayer
-            
+
             local function handleBall(ball)
                 if ball.Name == "Football" and ball:IsA("BasePart") then
                     local v0 = ball.Velocity
@@ -944,3 +799,6 @@ Misc:CreateToggle({
         setPlayerTransparency(0.6)
     end,
 })
+
+
+
