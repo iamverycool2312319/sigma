@@ -115,7 +115,7 @@ local Misc3 = MainTab2:CreateSection("fun stuff", 13585011079)
 
 --> Variables For Callbacks
 
-    Misc:CreateToggle({
+    Misc3:CreateToggle({
         Title = "finish cap race",
         Binding = false,
         CurrentValue = false,
@@ -230,21 +230,7 @@ Misc:CreateSlider({
     })
     
 
-  Misc:CreateToggle({
-        Title = "Auto qb",
-        Binding = false,
-        CurrentValue = false,
-        Callback = function(data)
-            local blacklisted = {"KICKOFF", "PUNT", "PAT"}
-            while true do
-                task.wait(1/30)
-                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and replicatedStorage.Values:FindFirstChild("Status") and replicatedStorage.Values.Status.Value == "PrePlay" and workspace:FindFirstChild("Football") and data.Enabled and not table.find(blacklisted, replicatedStorage.Values.StatusTag.Value) and replicatedStorage.Values.PossessionTag.Value == player.Team.Name then
-                    player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("Football").CFrame
-                    repeat task.wait() until not workspace:FindFirstChild("Football")
-                end
-            end
-        end
-    })
+
 
 
 
@@ -311,7 +297,7 @@ Misc:CreateSlider({
             end
         end)
     end)
-    
+    --finish cap
     Misc2:CreateToggle({
         Title = "kick aimbot just tap once",
         Binding = false,
@@ -378,7 +364,7 @@ Misc:CreateToggle({
 
 
 
-Misc:CreateToggle({
+Misc3:CreateToggle({
     Title = "FPS Boost",
     Binding = false,
     CurrentValue = false,
@@ -624,7 +610,7 @@ end
 
 local SteppedConnection = nil
 
-Misc3:CreateToggle({
+Misc2:CreateToggle({
     Title = "Pull vector BLATANT(10)",
       Binding = false,
       CurrentValue = false,
@@ -640,7 +626,7 @@ Misc3:CreateToggle({
     end,
 })
 
-Misc3:CreateSlider({
+Misc2:CreateSlider({
     Title = "pull vector distance",
     CurrentValue = 0,
     Range = {0, 50},
@@ -874,3 +860,72 @@ coroutine.resume(
         end
     )
 )
+
+
+
+
+local magtoggle = false
+local range = 0
+
+local function catchObjects(plr, range)
+    local character = plr.Character
+    if character then
+        local catchLeft = character:WaitForChild('CatchLeft')
+        local catchRight = character:WaitForChild('CatchRight')
+
+        catchLeft.Size = Vector3.new(range, range, range)
+        catchRight.Size = Vector3.new(range, range, range)
+    end
+end
+
+local function resetCatch(plr)
+    local character = plr.Character
+    if character then
+        local catchLeft = character:WaitForChild('CatchLeft')
+        local catchRight = character:WaitForChild('CatchRight')
+
+        catchLeft.Size = Vector3.new(1.4, 1.65, 1.4)
+        catchRight.Size = Vector3.new(1.4, 1.65, 1.4)
+    end
+end
+
+local function onButtonClick()
+    local plr = game.Players.LocalPlayer
+    if magtoggle then
+        resetCatch(plr)
+    else
+        catchObjects(plr, range)
+    end
+    magtoggle = not magtoggle
+end
+
+Misc:CreateToggle({
+    Title = "MobileV2 mags BY REMY",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(v)
+        magtoggle = v
+        local plr = game.Players.LocalPlayer
+        if magtoggle then
+            catchObjects(plr, range)
+        else
+            resetCatch(plr)
+        end
+    end
+})
+
+Misc:CreateSlider({
+    Title = "MobileV2 range BY REMY",
+    CurrentValue = 0,
+    Range = {0, 500},
+    Callback = function(v)
+        range = v
+        if magtoggle then
+            local plr = game.Players.LocalPlayer
+            catchObjects(plr, range)
+        end
+    end
+})
+
+
+--pull
