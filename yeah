@@ -92,7 +92,7 @@ end
  
 task.wait()
  
-print('Done! Now Loading')
+print('Bypass Done, Now Loading!')
 
 
 --> UI Initialization
@@ -929,3 +929,5 @@ Misc:CreateSlider({
 
 
 --pull
+
+print("Saturn Hub Loaded!")
