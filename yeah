@@ -99,7 +99,7 @@ print('Bypass Done, Now Loading!')
 local MakoLib = loadstring(game:HttpGet("https://gist.githubusercontent.com/N2TheLegend/bc773f2cb81cff790e1929e40ce83664/raw/9746b17e8537d53cd32c45f311eb949f1b553f07/Mako.lua",true))()
 
 local Window = MakoLib:CreateWindow({
-    Title = "Solar Hub (BETA FOR MOBILE)"
+    Title = "Saturn Hub (BETA FOR MOBILE)"
 })
 
 local MainTab = Window:CreateTab("useful stuff", 13594361489)
@@ -128,6 +128,78 @@ local Misc3 = MainTab2:CreateSection("fun stuff", 13585011079)
 
 local connection
 local tprange = 0  -- Initialize tprange variable
+
+
+
+
+
+local magtoggle = false
+local range = 0
+
+local function catchObjects(plr, range)
+    local character = plr.Character
+    if character then
+        local catchLeft = character:WaitForChild('CatchLeft')
+        local catchRight = character:WaitForChild('CatchRight')
+
+        catchLeft.Size = Vector3.new(range, range, range)
+        catchRight.Size = Vector3.new(range, range, range)
+    end
+end
+
+local function resetCatch(plr)
+    local character = plr.Character
+    if character then
+        local catchLeft = character:WaitForChild('CatchLeft')
+        local catchRight = character:WaitForChild('CatchRight')
+
+        catchLeft.Size = Vector3.new(1.4, 1.65, 1.4)
+        catchRight.Size = Vector3.new(1.4, 1.65, 1.4)
+    end
+end
+
+local function onButtonClick()
+    local plr = game.Players.LocalPlayer
+    if magtoggle then
+        resetCatch(plr)
+    else
+        catchObjects(plr, range)
+    end
+    magtoggle = not magtoggle
+end
+
+Misc:CreateToggle({
+    Title = "MobileV2 mags BY REMY",
+    Binding = false,
+    CurrentValue = false,
+    Callback = function(v)
+        magtoggle = v
+        local plr = game.Players.LocalPlayer
+        if magtoggle then
+            catchObjects(plr, range)
+        else
+            resetCatch(plr)
+        end
+    end
+})
+
+Misc:CreateSlider({
+    Title = "MobileV2 range BY REMY",
+    CurrentValue = 0,
+    Range = {0, 500},
+    Callback = function(v)
+        range = v
+        if magtoggle then
+            local plr = game.Players.LocalPlayer
+            catchObjects(plr, range)
+        end
+    end
+})
+
+
+
+
+
 
 -- Define the toggle
 Misc:CreateToggle({
@@ -862,70 +934,6 @@ coroutine.resume(
 )
 
 
-
-
-local magtoggle = false
-local range = 0
-
-local function catchObjects(plr, range)
-    local character = plr.Character
-    if character then
-        local catchLeft = character:WaitForChild('CatchLeft')
-        local catchRight = character:WaitForChild('CatchRight')
-
-        catchLeft.Size = Vector3.new(range, range, range)
-        catchRight.Size = Vector3.new(range, range, range)
-    end
-end
-
-local function resetCatch(plr)
-    local character = plr.Character
-    if character then
-        local catchLeft = character:WaitForChild('CatchLeft')
-        local catchRight = character:WaitForChild('CatchRight')
-
-        catchLeft.Size = Vector3.new(1.4, 1.65, 1.4)
-        catchRight.Size = Vector3.new(1.4, 1.65, 1.4)
-    end
-end
-
-local function onButtonClick()
-    local plr = game.Players.LocalPlayer
-    if magtoggle then
-        resetCatch(plr)
-    else
-        catchObjects(plr, range)
-    end
-    magtoggle = not magtoggle
-end
-
-Misc:CreateToggle({
-    Title = "MobileV2 mags BY REMY",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(v)
-        magtoggle = v
-        local plr = game.Players.LocalPlayer
-        if magtoggle then
-            catchObjects(plr, range)
-        else
-            resetCatch(plr)
-        end
-    end
-})
-
-Misc:CreateSlider({
-    Title = "MobileV2 range BY REMY",
-    CurrentValue = 0,
-    Range = {0, 500},
-    Callback = function(v)
-        range = v
-        if magtoggle then
-            local plr = game.Players.LocalPlayer
-            catchObjects(plr, range)
-        end
-    end
-})
 
 
 --pull
