@@ -917,7 +917,7 @@ Misc:CreateToggle({
 Misc:CreateSlider({
     Title = "MobileV2 range BY REMY",
     CurrentValue = 0,
-    Range = {0, 500},
+    Range = {0, 250},
     Callback = function(v)
         range = v
         if magtoggle then
