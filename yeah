@@ -92,14 +92,14 @@ end
  
 task.wait()
  
-print('Bypass Done, Now Loading!')
+print('Done! Now Loading')
 
 
 --> UI Initialization
 local MakoLib = loadstring(game:HttpGet("https://gist.githubusercontent.com/N2TheLegend/bc773f2cb81cff790e1929e40ce83664/raw/9746b17e8537d53cd32c45f311eb949f1b553f07/Mako.lua",true))()
 
 local Window = MakoLib:CreateWindow({
-    Title = "Saturn Hub (BETA FOR MOBILE)"
+    Title = "Solar Hub (BETA FOR MOBILE)"
 })
 
 local MainTab = Window:CreateTab("useful stuff", 13594361489)
@@ -113,6 +113,104 @@ local Misc2 = MainTab:CreateSection("used alot", 13585011079)
 local Misc3 = MainTab2:CreateSection("fun stuff", 13585011079)
 
 
+
+
+
+
+
+local mag = false -- Variable to track the toggle state
+
+local players = game:GetService("Players")
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remotes = replicatedStorage:FindFirstChild("Remotes")
+local characterSoundEvent = remotes:FindFirstChild("CharacterSoundEvent")
+local player = Players.LocalPlayer
+local runService = game:GetService("RunService")
+
+local blatant = 0
+
+
+local regDelay = 0
+--Regular
+-- Functions
+
+local Players = game:GetService("Players")
+local Mouse = Players.LocalPlayer:GetMouse()
+local numTeleports = 30 -- Define the number of teleports
+
+local mag = false -- Variable to track the toggle state
+
+local function teleportToClosestFootball()
+    if mag == true then
+        local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
+        if not catchRight then
+            return
+        end
+
+        local closestFootball = nil
+        local closestDistance = math.huge
+
+        for i, v in pairs(game.Workspace:GetDescendants()) do
+            if v.Name == "Football" and v:IsA("BasePart") then
+                local distance = (v.Position - catchRight.Position).Magnitude
+                if distance < closestDistance and distance <= blatant then
+                    v.CanCollide = false
+                    closestDistance = distance
+                    closestFootball = v
+                end
+            end
+        end
+
+        -- Teleport the closest football if found
+        if closestFootball then
+            for _ = 1, numTeleports do
+                if mag == true then
+                    closestFootball.CFrame = catchRight.CFrame
+                    wait() -- Optional delay between teleports
+                else
+                    break
+                end
+            end
+        end
+    end
+end
+
+-- Call the function when the left mouse button is clicked
+Mouse.Button1Down:Connect(function()
+    teleportToClosestFootball()
+end)
+
+
+
+
+--pull
+
+
+Misc:CreateToggle({
+    Title = "Mobile mag by talia",
+      Binding = false,
+      CurrentValue = false,
+      Callback = function(v)
+        mag = v
+        if mag then
+            task.spawn(teleportToClosestFootball)
+        else
+            -- Stop the teleportation if the toggle is turned off
+            stopTeleportation()
+        end
+    end
+})
+
+
+
+Misc:CreateSlider({
+    Title = "talias mag",
+    CurrentValue = 0,
+    Range = {0, 50},
+    Callback = function(v)
+	blatant = v
+end})
 --> Variables For Callbacks
 
     Misc3:CreateToggle({
@@ -126,127 +224,16 @@ local Misc3 = MainTab2:CreateSection("fun stuff", 13585011079)
 
 
 
-local connection
-local tprange = 0  -- Initialize tprange variable
-
-
-
-
-
-local magtoggle = false
-local range = 0
-
-local function catchObjects(plr, range)
-    local character = plr.Character
-    if character then
-        local catchLeft = character:WaitForChild('CatchLeft')
-        local catchRight = character:WaitForChild('CatchRight')
-
-        catchLeft.Size = Vector3.new(range, range, range)
-        catchRight.Size = Vector3.new(range, range, range)
-    end
-end
-
-local function resetCatch(plr)
-    local character = plr.Character
-    if character then
-        local catchLeft = character:WaitForChild('CatchLeft')
-        local catchRight = character:WaitForChild('CatchRight')
-
-        catchLeft.Size = Vector3.new(1.4, 1.65, 1.4)
-        catchRight.Size = Vector3.new(1.4, 1.65, 1.4)
-    end
-end
-
-local function onButtonClick()
-    local plr = game.Players.LocalPlayer
-    if magtoggle then
-        resetCatch(plr)
-    else
-        catchObjects(plr, range)
-    end
-    magtoggle = not magtoggle
-end
-
-Misc:CreateToggle({
-    Title = "MobileV2 mags BY REMY",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(v)
-        magtoggle = v
-        local plr = game.Players.LocalPlayer
-        if magtoggle then
-            catchObjects(plr, range)
-        else
-            resetCatch(plr)
-        end
-    end
-})
-
-Misc:CreateSlider({
-    Title = "MobileV2 range BY REMY",
-    CurrentValue = 0,
-    Range = {0, 500},
-    Callback = function(v)
-        range = v
-        if magtoggle then
-            local plr = game.Players.LocalPlayer
-            catchObjects(plr, range)
-        end
-    end
-})
-
-
-
-
-
-
--- Define the toggle
-Misc:CreateToggle({
-    Title = "TP tackle",
-    Binding = false,
-    CurrentValue = false,
-    Callback = function(enabled)
-        if enabled then
-            connection = game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
-                for _, obj in ipairs(game.workspace:GetDescendants()) do
-                    if obj.Name == "Football" and obj:IsA("Tool") then
-                        local toolPosition = obj.Parent.HumanoidRootPart.Position
-                        local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-                        if (toolPosition - playerPosition).Magnitude <= tprange then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.Parent.HumanoidRootPart.CFrame + Vector3.new(1, 1, 1)
-                        end
-                    end
-                end
-            end)
-        else
-            if connection then
-                connection:Disconnect()  -- Disconnect the mouse click event if it exists
-            end
-        end
-    end,
-})
-
--- Define the slider
-Misc:CreateSlider({
-    Title = "Auto tackle range TP",
-    CurrentValue = 0,
-    Range = {0, 15},
-    Callback = function(value)
-        tprange = value
-    end,
-})
-
-    
-    
-
-
-
-
-
 
 
     
+   
+
+
+
+
+
+
 
 
  
@@ -482,7 +469,7 @@ Misc3:CreateToggle({
 })
 
 
-
+--catch
 
 
 local regtog = false -- Variable to track the toggle state
@@ -492,13 +479,12 @@ local userInputService = game:GetService("UserInputService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local remotes = replicatedStorage:FindFirstChild("Remotes")
 local characterSoundEvent = remotes:FindFirstChild("CharacterSoundEvent")
-local player = players.LocalPlayer
+local player = Players.LocalPlayer
 local runService = game:GetService("RunService")
 
 local blatant = 0
-local universal = 0
+
 local uis = game:GetService("UserInputService")
-local uniDelay = 0
 local regDelay = 0
 --Regular
 -- Functions
@@ -506,40 +492,7 @@ local regDelay = 0
 local Players = game:GetService("Players")
 local Mouse = Players.LocalPlayer:GetMouse()
 local numTeleports = 30 -- Define the number of teleports
-local tooggleEnabled = false -- Variable to track the toggle state
 
-local function universalcatch()
-	if tooggleEnabled then
-		local catchRight = Players.LocalPlayer.Character:FindFirstChild("CatchRight")
-
-		if not catchRight then
-			return
-		end
-
-		local closestFootball = nil
-		local closestDistance = math.huge
-
-		for i, v in pairs(game.Workspace:GetDescendants()) do
-			if v.Name == "Football" and v:IsA("BasePart") then
-				local distance = (v.Position - catchRight.Position).Magnitude
-				if distance < closestDistance and distance <= universal then
-					v.CanCollide = false
-					closestDistance = distance
-					closestFootball = v
-				end
-			end
-		end
-
-		if closestFootball then
-				wait(uniDelay)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 0)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
-			firetouchinterest(game.Players.LocalPlayer.Character["CatchRight"], closestFootball, 1)
-			task.wait()
-		end
-	end
-end
 
 local regtog = false -- Variable to track the toggle state
 --ballgui
@@ -616,46 +569,19 @@ end})
 Misc2:CreateSlider({
     Title = "emulator mag distance",
     CurrentValue = 0,
-    Range = {10, 250},
+    Range = {0, 50},
     Callback = function(v)
 	blatant = v
 end})
 
 
 
-Misc2:CreateToggle({
-    Title = "mobile mag test",
-      Binding = false,
-      CurrentValue = false,
-      Callback = function(v)
-	tooggleEnabled = v
-	while tooggleEnabled == true do
-		task.wait()
-		universalcatch()
-	end
-end})
-
-Misc2:CreateSlider({
-    Title = "Mobile delay",
-    CurrentValue = 0,
-    Range = {0, 1},
-    Callback = function(v)
-	uniDelay = v
-end})
-
-Misc2:CreateSlider({
-    Title = "mobile mag distance",
-    CurrentValue = 0,
-    Range = {0, 60},
-    Callback = function(v)
-	universal = v
-end})
 
 
 
 
 
-local player = game.Players.LocalPlayer
+local Player = game:GetService("Players").LocalPlayer
 local runService = game:GetService("RunService")
 local PullVectorEnabled = false
 local PullVectorDistance = 10
@@ -701,95 +627,13 @@ Misc2:CreateToggle({
 Misc2:CreateSlider({
     Title = "pull vector distance",
     CurrentValue = 0,
-    Range = {0, 50},
+    Range = {0, 5},
     Callback = function(value)
         PullVectorDistance = value
     end,
 })
 
-local magnets = true
-local MaxDistance = 50 -- Biggest Range Firetouch can go
-local MinFootballSize = 5 
-local player = game:GetService("Players").LocalPlayer
 
-local function CatchFootball()
-    while magnets do
-        wait()
-        local football = game.Workspace:WaitForChild("Football")
-        local humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
-
-        for index, football in ipairs(workspace:GetChildren()) do
-            if football.Name == "Football" and football:IsA("BasePart") and not football.Anchored then
-                local mag = (football.Position - humanoid.Position).magnitude
-                local footballSize = football.Size.Magnitude
-
-                if mag <= MaxDistance and footballSize <= MinFootballSize then
-                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 1)
-                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
-                    wait()
-                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 1)
-                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
-                end
-            end
-        end
-    end
-end
-
-Misc3:CreateToggle({
-    Title = "football reach BLATANT",
-      Binding = false,
-      CurrentValue = false,
-      Callback = function(state)
-           magnets = state
-        if magnets then
-            CatchFootball()
-        end
-    end,
-})
-
-local AutoFollowQb = false
-local followCarrierTask
-
-local function FollowCarrier()
-    while AutoFollowQb do
-        local carrier = game:GetService("ReplicatedStorage").Values.Carrier.Value
-        if carrier and carrier:IsDescendantOf(game.Players) and carrier.Team ~= game.Players.LocalPlayer.Team then
-            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-            if humanoid then
-                humanoid:MoveTo(carrier.Character.Torso.Position)
-            end
-        end
-        wait()
-    end
-end
-
-local function ToggleFollowCarrier(value)
-    AutoFollowQb = value
-    if value then
-        followCarrierTask = task.spawn(FollowCarrier)
-    else
-        if followCarrierTask then
-            followCarrierTask:cancel()
-        end
-    end
-end
-
-Misc3:CreateToggle({
-    Title = "auto follow qb",
-      Binding = false,
-      CurrentValue = false,
-      Callback = ToggleFollowCarrier,
-})
-
-
-Misc3:CreateSlider({
-    Title = "qb follow dist pc better",
-    CurrentValue = 0,
-    Range = {0, 15},
-    Callback = function(set)
-
-end,
-})
 
 local function toggleState(v)
     local state = v
@@ -829,15 +673,9 @@ Misc3:CreateToggle({
         toggleState(v)
     end
 })
-Misc3:CreateToggle({
-    Title = "anti oob",
-      Binding = false,
-      CurrentValue = false,
-      Callback = function(state)
-        getgenv().Shit = state
-    end,
-})
-local player = game.Players.LocalPlayer
+
+
+local Player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local rootPart = character:WaitForChild("HumanoidRootPart")
 
@@ -868,74 +706,4 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 end)
 
 
-Misc3:CreateToggle({
-    Title = "no bounds",
-      Binding = false,
-      CurrentValue = false,
-      Callback = function(state)
-        pass.nobounds_enabled = state
-    end
-})
 
-coroutine.resume(
-    coroutine.create(
-        function()
-            repeat
-                wait(.25)
-            until Era_READY and ERA and ERA.nobounds_enabled
-            while wait() do
-                local s, e =
-                    pcall(
-                    function()
-                        if pass.nobounds_enabled then
-                            local bounds = workspace.Models:FindFirstChild("Boundaries")
-                            bounds:ClearAllChildren()
-                        end
-                    end
-                )
-                if not s then
-                    warn(e)
-                end
-            end
-        end
-    )
-)
-
-Misc3:CreateToggle({
-    Title = "forward passed",
-      Binding = false,
-      CurrentValue = false,
-      Callback = function(state)
-        pass.illegalForwardPass_enabled = state
-    end
-})
-
-coroutine.resume(
-    coroutine.create(
-        function()
-            repeat
-                wait(.25)
-            until Era_READY and ERA and ERA.illegalForwardPass_enabled
-            local wall = workspace:WaitForChild("LineDownWall")
-            local _wall = wall:Clone()
-            _wall.Parent = workspace
-            while wait() do
-                _wall.Position = workspace:WaitForChild("LineDown").Position
-                _wall.CanCollide = values.Status.Value == "PrePlay"
-                local hasball = (values.QB.Value == plr and values.Carrier.Value == plr)
-                if pass.illegalForwardPass_enabled and wall and hasball and values.Status.Value == "InPlay" then
-                    wall.Parent = nil
-                else
-                    wall.Parent = workspace
-                end
-            end
-        end
-    )
-)
-
-
-
-
---pull
-
-print("Saturn Hub Loaded!")
